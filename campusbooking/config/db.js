@@ -12,6 +12,9 @@ const pool = new Pool({
   max: 10,
   keepAlive: true,
   keepAliveInitialDelayMillis: 10000,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 pool.on('connect', () => {
