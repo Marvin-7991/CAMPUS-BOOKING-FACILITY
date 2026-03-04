@@ -7,6 +7,11 @@ const pool = new Pool({
   database: process.env.DB_NAME,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
+  connectionTimeoutMillis: 10000,
+  idleTimeoutMillis: 30000,
+  max: 10,
+  keepAlive: true,
+  keepAliveInitialDelayMillis: 10000,
 });
 
 pool.on('connect', () => {
@@ -14,6 +19,10 @@ pool.on('connect', () => {
 });
 
 pool.on('error', (err) => {
+  if (err.code === 'ECONNRESET') {
+    console.warn('DB connection reset — pool will reconnect automatically');
+    return;
+  }
   console.error('Unexpected database error', err);
   process.exit(-1);
 });
